@@ -41,46 +41,35 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * 1. Navbar Sticky & Elevation Behavior
+ * 1. Navbar Sticky & Multi-page Active Highlighting
  */
 function initNavbarScroll() {
   const navbarPill = document.getElementById('navbarPill');
-  const navLinks = document.querySelectorAll('.nav-link');
-  const sections = document.querySelectorAll('section[id], main[id]');
+  const navLinks = document.querySelectorAll('.nav-link, .drawer-link');
+  
+  // Highlight active link based on current page
+  const path = window.location.pathname;
+  let pageName = path.split('/').pop() || 'index.html';
+  if (pageName === '' || pageName === 'Aofe') pageName = 'index.html';
 
-  let lastScrollY = window.scrollY;
+  navLinks.forEach(link => {
+    const href = link.getAttribute('href');
+    if (href === pageName || (pageName === 'index.html' && (href === 'index.html' || href === './' || href === '#top'))) {
+      link.classList.add('active');
+    } else {
+      link.classList.remove('active');
+    }
+  });
 
   window.addEventListener('scroll', () => {
     const currentY = window.scrollY;
 
     // Elevation on scroll
-    if (currentY > 60) {
+    if (currentY > 40) {
       navbarPill?.classList.add('scrolled');
     } else {
       navbarPill?.classList.remove('scrolled');
     }
-
-    // Active link highlighting
-    let currentSectionId = '';
-    sections.forEach(section => {
-      const top = section.offsetTop - 150;
-      const height = section.offsetHeight;
-      if (currentY >= top && currentY < top + height) {
-        currentSectionId = section.getAttribute('id');
-      }
-    });
-
-    if (currentSectionId) {
-      navLinks.forEach(link => {
-        if (link.getAttribute('href') === `#${currentSectionId}`) {
-          link.classList.add('active');
-        } else {
-          link.classList.remove('active');
-        }
-      });
-    }
-
-    lastScrollY = currentY;
   }, { passive: true });
 }
 
@@ -291,175 +280,265 @@ function initGSAPAnimations(prefersReducedMotion) {
     return;
   }
 
-  // A. Hero Section Entrance (Page Load)
-  const heroTl = gsap.timeline({
-    defaults: {
-      duration: 1.2,
-      ease: 'power3.out'
-    }
-  });
-
-  heroTl
-    .fromTo('#heroBgImg', 
-      { scale: 1.08 },
-      { scale: 1, duration: 1.8, ease: 'power2.out' },
-      0
-    )
-    .fromTo('#heroBadge', 
-      { y: -20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' },
-      0.2
-    )
-    .fromTo('#heroTitle', 
-      { y: 45, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1.2, ease: 'power3.out' },
-      0.3
-    )
-    .fromTo('#heroDesc', 
-      { y: 30, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1, ease: 'power3.out' },
-      0.55
-    )
-    .fromTo('#heroCtas a', 
-      { y: 20, opacity: 0 },
-      { y: 0, opacity: 1, stagger: 0.15, duration: 0.8, ease: 'power3.out' },
-      0.7
-    )
-    .fromTo('.hero-corner-mark', 
-      { scale: 0.8, opacity: 0 },
-      { scale: 1, opacity: 0.18, duration: 1.4, ease: 'power2.out' },
-      0.4
-    );
-
-  // B. Hero Background Parallax Scrub on Scroll
-  gsap.to('#heroBgImg', {
-    yPercent: 16,
-    ease: 'none',
-    scrollTrigger: {
-      trigger: '.hero-shell',
-      start: 'top top',
-      end: 'bottom top',
-      scrub: 0.6
-    }
-  });
-
-  // C. Trust Counters Animation
-  document.querySelectorAll('.metric-number').forEach(counter => {
-    const target = parseInt(counter.getAttribute('data-target'), 10);
-    const suffix = counter.textContent.replace(/[0-9]/g, '');
-
-    ScrollTrigger.create({
-      trigger: counter,
-      start: 'top 85%',
-      once: true,
-      onEnter: () => {
-        let obj = { val: 0 };
-        gsap.to(obj, {
-          val: target,
-          duration: 1.8,
-          ease: 'power2.out',
-          onUpdate: () => {
-            counter.textContent = Math.floor(obj.val) + suffix;
-          }
-        });
+  // A. Hero Section Entrance (Home Page)
+  if (document.getElementById('heroTitle')) {
+    const heroTl = gsap.timeline({
+      defaults: {
+        duration: 1.2,
+        ease: 'power3.out'
       }
     });
-  });
 
-  // D. Staggered Service Cards Reveal (1200ms easeInOutCubic as per Wix 3739)
-  gsap.from('.service-card', {
-    scrollTrigger: {
-      trigger: '#servicesGrid',
-      start: 'top 82%',
-      toggleActions: 'play none none reverse'
-    },
-    y: 50,
-    opacity: 0,
-    stagger: 0.14,
-    duration: 1.2,
-    ease: 'cubic-bezier(0.645, 0.045, 0.355, 1)'
-  });
+    heroTl
+      .fromTo('#heroBgImg', 
+        { scale: 1.08 },
+        { scale: 1, duration: 1.8, ease: 'power2.out' },
+        0
+      )
+      .fromTo('#heroBadge', 
+        { y: -20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' },
+        0.2
+      )
+      .fromTo('#heroTitle', 
+        { y: 45, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1.2, ease: 'power3.out' },
+        0.3
+      )
+      .fromTo('#heroDesc', 
+        { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1, ease: 'power3.out' },
+        0.55
+      )
+      .fromTo('#heroCtas a', 
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, stagger: 0.15, duration: 0.8, ease: 'power3.out' },
+        0.7
+      )
+      .fromTo('.hero-corner-mark', 
+        { scale: 0.8, opacity: 0 },
+        { scale: 1, opacity: 0.18, duration: 1.4, ease: 'power2.out' },
+        0.4
+      );
 
-  // E. Process Timeline Step Reveal
-  gsap.from('.process-step', {
-    scrollTrigger: {
-      trigger: '#processTimeline',
-      start: 'top 80%',
-      toggleActions: 'play none none reverse'
-    },
-    y: 40,
-    opacity: 0,
-    stagger: 0.15,
-    duration: 1,
-    ease: 'power3.out'
-  });
-
-  // F. About Section Background Parallax Scrub
-  gsap.to('#aboutParallaxImg', {
-    yPercent: 18,
-    ease: 'none',
-    scrollTrigger: {
-      trigger: '.about-section',
-      start: 'top bottom',
-      end: 'bottom top',
-      scrub: 0.8
-    }
-  });
-
-  // G. About Content Entrance
-  gsap.from('.about-text-content', {
-    scrollTrigger: {
-      trigger: '.about-section',
-      start: 'top 75%',
-      toggleActions: 'play none none reverse'
-    },
-    x: 40,
-    opacity: 0,
-    duration: 1.2,
-    ease: 'power3.out'
-  });
-
-  // H. Quote Request Banner: Scroll-Scrubbed Reveal (Wix 3739 measured effect)
-  gsap.fromTo('#quoteTitle', 
-    { y: 36, opacity: 0 },
-    {
-      y: 0,
-      opacity: 1,
+    // Parallax on Home Hero
+    gsap.to('#heroBgImg', {
+      yPercent: 16,
       ease: 'none',
       scrollTrigger: {
-        trigger: '#quoteBanner',
-        start: 'top 90%',
-        end: 'center center',
+        trigger: '.hero-shell',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 0.6
+      }
+    });
+  }
+
+  // A2. Subpage Hero Entrance (Inner Pages)
+  if (document.querySelector('.subpage-hero-card')) {
+    const subHeroTl = gsap.timeline({
+      defaults: { duration: 1, ease: 'power3.out' }
+    });
+
+    subHeroTl
+      .fromTo('.subpage-hero-card .hero-bg-img',
+        { scale: 1.08 },
+        { scale: 1, duration: 1.6, ease: 'power2.out' },
+        0
+      )
+      .fromTo('.breadcrumb-nav',
+        { y: -15, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.7 },
+        0.2
+      )
+      .fromTo('.subpage-hero-title',
+        { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.9 },
+        0.3
+      )
+      .fromTo('.subpage-hero-desc',
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8 },
+        0.45
+      );
+
+    // Parallax on Subpage Hero
+    gsap.to('.subpage-hero-card .hero-bg-img', {
+      yPercent: 14,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '.subpage-hero-shell',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 0.5
+      }
+    });
+  }
+
+  // C. Trust Counters Animation
+  const counters = document.querySelectorAll('.metric-number');
+  if (counters.length > 0) {
+    counters.forEach(counter => {
+      const target = parseInt(counter.getAttribute('data-target'), 10);
+      const suffix = counter.textContent.replace(/[0-9]/g, '');
+
+      ScrollTrigger.create({
+        trigger: counter,
+        start: 'top 85%',
+        once: true,
+        onEnter: () => {
+          let obj = { val: 0 };
+          gsap.to(obj, {
+            val: target,
+            duration: 1.8,
+            ease: 'power2.out',
+            onUpdate: () => {
+              counter.textContent = Math.floor(obj.val) + suffix;
+            }
+          });
+        }
+      });
+    });
+  }
+
+  // D. Staggered Service Cards Reveal
+  if (document.querySelector('.service-card')) {
+    gsap.from('.service-card', {
+      scrollTrigger: {
+        trigger: document.getElementById('servicesGrid') || '.service-card',
+        start: 'top 82%',
+        toggleActions: 'play none none reverse'
+      },
+      y: 50,
+      opacity: 0,
+      stagger: 0.12,
+      duration: 1.1,
+      ease: 'power3.out'
+    });
+  }
+
+  // D2. Detailed Service Cards for services.html
+  if (document.querySelector('.service-detail-card')) {
+    gsap.from('.service-detail-card', {
+      scrollTrigger: {
+        trigger: '.services-detail-grid',
+        start: 'top 85%',
+        toggleActions: 'play none none reverse'
+      },
+      y: 45,
+      opacity: 0,
+      stagger: 0.14,
+      duration: 1.1,
+      ease: 'power3.out'
+    });
+  }
+
+  // E. Process Timeline Step Reveal
+  if (document.querySelector('.process-step')) {
+    gsap.from('.process-step', {
+      scrollTrigger: {
+        trigger: document.getElementById('processTimeline') || '.process-step',
+        start: 'top 80%',
+        toggleActions: 'play none none reverse'
+      },
+      y: 40,
+      opacity: 0,
+      stagger: 0.15,
+      duration: 1,
+      ease: 'power3.out'
+    });
+  }
+
+  // F. About Section Background Parallax Scrub
+  if (document.getElementById('aboutParallaxImg')) {
+    gsap.to('#aboutParallaxImg', {
+      yPercent: 18,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '.about-section',
+        start: 'top bottom',
+        end: 'bottom top',
         scrub: 0.8
       }
-    }
-  );
+    });
+  }
 
-  gsap.from('.quote-form', {
-    scrollTrigger: {
-      trigger: '#quoteBanner',
-      start: 'top 80%',
-      toggleActions: 'play none none reverse'
-    },
-    y: 40,
-    opacity: 0,
-    duration: 1,
-    ease: 'power3.out'
-  });
+  // G. About Content Entrance
+  if (document.querySelector('.about-text-content')) {
+    gsap.from('.about-text-content', {
+      scrollTrigger: {
+        trigger: '.about-section',
+        start: 'top 75%',
+        toggleActions: 'play none none reverse'
+      },
+      x: 40,
+      opacity: 0,
+      duration: 1.2,
+      ease: 'power3.out'
+    });
+  }
+
+  // H. Quote Request Banner
+  if (document.getElementById('quoteBanner')) {
+    gsap.fromTo('#quoteTitle', 
+      { y: 36, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '#quoteBanner',
+          start: 'top 90%',
+          end: 'center center',
+          scrub: 0.8
+        }
+      }
+    );
+
+    gsap.from('.quote-form', {
+      scrollTrigger: {
+        trigger: '#quoteBanner',
+        start: 'top 80%',
+        toggleActions: 'play none none reverse'
+      },
+      y: 40,
+      opacity: 0,
+      duration: 1,
+      ease: 'power3.out'
+    });
+  }
 
   // I. Testimonial Cards Stagger
-  gsap.from('.testimonial-card', {
-    scrollTrigger: {
-      trigger: '#testimonials',
-      start: 'top 80%',
-      toggleActions: 'play none none reverse'
-    },
-    y: 40,
-    opacity: 0,
-    stagger: 0.18,
-    duration: 1,
-    ease: 'power3.out'
-  });
+  if (document.querySelector('.testimonial-card')) {
+    gsap.from('.testimonial-card', {
+      scrollTrigger: {
+        trigger: document.getElementById('testimonials') || '.testimonial-card',
+        start: 'top 80%',
+        toggleActions: 'play none none reverse'
+      },
+      y: 40,
+      opacity: 0,
+      stagger: 0.18,
+      duration: 1,
+      ease: 'power3.out'
+    });
+  }
+
+  // J. Contact Info Cards on contact.html
+  if (document.querySelector('.contact-info-box')) {
+    gsap.from('.contact-info-box', {
+      scrollTrigger: {
+        trigger: '.contact-info-cards',
+        start: 'top 85%',
+        toggleActions: 'play none none reverse'
+      },
+      x: 35,
+      opacity: 0,
+      stagger: 0.15,
+      duration: 0.9,
+      ease: 'power3.out'
+    });
+  }
 }
 
 /**
