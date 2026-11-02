@@ -1963,3 +1963,127 @@ ul {
     scroll-behavior: auto !important;
   }
 }
+
+/* ==========================================================================
+   BILINGUAL (ENGLISH - LTR) & LANGUAGE SWITCHER EXTENSIONS
+   ========================================================================== */
+
+/* Language Switcher Pill (Wix 3718 Nav Style) */
+.btn-lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: var(--radius-pill);
+  color: #FFFFFF;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  letter-spacing: 0.03em;
+}
+
+.navbar-pill.scrolled .btn-lang {
+  background: var(--color-bg-subtle);
+  border-color: rgba(15, 17, 21, 0.12);
+  color: var(--color-dark);
+}
+
+.btn-lang:hover {
+  background: var(--color-electric);
+  border-color: var(--color-electric);
+  color: var(--color-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(220, 255, 2, 0.35);
+}
+
+.btn-lang svg {
+  display: block;
+}
+
+/* Drawer Language Switcher */
+.drawer-lang {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.25rem;
+  margin-top: 1.25rem;
+  background: rgba(220, 255, 2, 0.12);
+  border: 1px solid var(--color-electric);
+  border-radius: var(--radius-pill);
+  color: var(--color-electric);
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.drawer-lang:hover {
+  background: var(--color-electric);
+  color: var(--color-dark);
+}
+
+/* Global LTR (English) Rules */
+html[lang="en"] {
+  direction: ltr;
+  --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+html[lang="en"] body {
+  text-align: left;
+}
+
+html[lang="en"] .hero-content {
+  text-align: left;
+}
+
+html[lang="en"] .subpage-hero-card {
+  text-align: left;
+}
+
+html[lang="en"] .accordion-header {
+  text-align: left;
+}
+
+html[lang="en"] .proof-tag {
+  right: auto;
+  left: 1.25rem;
+}
+
+html[lang="en"] .floating-whatsapp-fab {
+  left: auto;
+  right: 2rem;
+  direction: ltr;
+}
+
+@media (max-width: 768px) {
+  html[lang="en"] .floating-whatsapp-fab {
+    left: auto;
+    right: 1.25rem;
+  }
+}
+
+html[lang="en"] .modal-close {
+  left: auto;
+  right: 1.5rem;
+}
+
+html[lang="en"] .spec-item,
+html[lang="en"] .contact-card,
+html[lang="en"] .quote-form-card,
+html[lang="en"] .service-detail-card,
+html[lang="en"] .cert-card,
+html[lang="en"] .workflow-step,
+html[lang="en"] .footer-col {
+  text-align: left;
+}
+
+html[lang="en"] .stat-prefix {
+  margin-right: 0.25rem;
+  margin-left: 0;
+}
+

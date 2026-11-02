@@ -50,7 +50,7 @@ function initNavbarScroll() {
   // Highlight active link based on current page
   const path = window.location.pathname;
   let pageName = path.split('/').pop() || 'index.html';
-  if (pageName === '' || pageName === 'Aofe') pageName = 'index.html';
+  if (pageName === '' || pageName === 'Aofe' || pageName === 'en') pageName = 'index.html';
 
   navLinks.forEach(link => {
     const href = link.getAttribute('href');
@@ -187,8 +187,9 @@ function initLightboxModal() {
 
   function openModal(imgSrc, title, desc) {
     if (!modal) return;
+    const isEn = document.documentElement.lang === 'en';
     if (modalImg) modalImg.src = imgSrc;
-    if (modalTitle) modalTitle.textContent = title || 'تفاصيل العمل';
+    if (modalTitle) modalTitle.textContent = title || (isEn ? 'Work Details' : 'تفاصيل العمل');
     if (modalDesc) modalDesc.textContent = desc || '';
 
     modal.classList.add('open');
@@ -250,16 +251,30 @@ function initQuickQuoteForm() {
     const name = document.getElementById('clientName')?.value.trim() || '';
     const city = document.getElementById('clientCity')?.value.trim() || '';
     const service = document.getElementById('serviceType')?.value || '';
-    const details = document.getElementById('projectDetails')?.value.trim() || 'بدون تفاصيل إضافية';
+    const details = document.getElementById('projectDetails')?.value.trim() || '';
 
-    const message = `السلام عليكم ورحمة الله وبركاته،
-أرغب في الاستفسار عن عرض سعر لمشروع حدادة:
+    const isEn = document.documentElement.lang === 'en';
+    let message = '';
+
+    if (isEn) {
+      message = `Hello,
+I would like to request a quotation / site inspection for a steel & contracting project:
+• Name: ${name}
+• City/District: ${city}
+• Service Type: ${service}
+• Details & Dimensions: ${details || 'No additional details provided'}
+
+Please contact me to schedule a consultation.`;
+    } else {
+      message = `السلام عليكم ورحمة الله وبركاته،
+أرغب في الاستفسار عن عرض سعر لمشروع حدادة ومقاولات:
 • الاسم: ${name}
 • المدينة/الحي: ${city}
 • نوع الخدمة: ${service}
-• التفاصيل والمقاسات: ${details}
+• التفاصيل والمقاسات: ${details || 'بدون تفاصيل إضافية'}
 
 أرجو التواصل لتحديد موعد المعاينة المجانية.`;
+    }
 
     const encoded = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/966597388770?text=${encoded}`;
