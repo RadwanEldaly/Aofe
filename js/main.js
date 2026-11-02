@@ -216,13 +216,13 @@ function initLightboxModal() {
   });
 
   // Bind to Certificates buttons
-  document.querySelectorAll('.cert-thumb-btn').forEach(btn => {
+  document.querySelectorAll('.cert-thumb-btn, .btn-cert-view, .cert-showcase-media').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       const img = btn.getAttribute('data-img');
       const title = btn.getAttribute('data-title');
       const desc = btn.getAttribute('data-desc');
-      openModal(img, title, desc);
+      if (img) openModal(img, title, desc);
     });
   });
 
