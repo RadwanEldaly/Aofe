@@ -28,7 +28,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // 6. Interactive WhatsApp Form Generator
   initQuickQuoteForm();
 
-  // 7. GSAP & ScrollTrigger Animations (Template 3739 Motion Engine)
+  // 7. Google Ads Conversion & Event Tracking (AW-18435685520)
+  initGoogleAdsTracking();
+
+  // 8. GSAP & ScrollTrigger Animations (Template 3739 Motion Engine)
   if (typeof gsap !== 'undefined') {
     if (typeof ScrollTrigger !== 'undefined') {
       gsap.registerPlugin(ScrollTrigger);
@@ -278,6 +281,23 @@ Please contact me to schedule a consultation.`;
 
     const encoded = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/966597388770?text=${encoded}`;
+
+    // Google Ads Lead Conversion Event
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', 'generate_lead', {
+        event_category: 'Leads',
+        event_label: service || 'Quick Quote Form',
+        value: 10.0,
+        currency: 'SAR'
+      });
+      window.gtag('event', 'conversion', {
+        send_to: 'AW-18435685520',
+        event_category: 'Leads',
+        event_label: 'Quote Form Submission',
+        value: 10.0,
+        currency: 'SAR'
+      });
+    }
 
     window.open(whatsappUrl, '_blank');
   });
@@ -577,5 +597,53 @@ function initFallbackAnimations() {
     el.style.transform = 'translateY(30px)';
     el.style.transition = 'all 0.8s cubic-bezier(0.22, 1, 0.36, 1)';
     observer.observe(el);
+  });
+}
+
+
+/**
+ * Google Ads Conversion & Interaction Tracking (AW-18435685520)
+ * Automatically tracks user clicks on WhatsApp links and Phone call buttons
+ */
+function initGoogleAdsTracking() {
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a');
+    if (!link) return;
+
+    const href = link.getAttribute('href') || '';
+
+    // WhatsApp click tracking
+    if (href.includes('wa.me') || href.includes('whatsapp.com')) {
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'conversion', {
+          send_to: 'AW-18435685520',
+          event_category: 'Contact',
+          event_label: 'WhatsApp Contact',
+          value: 1.0,
+          currency: 'SAR'
+        });
+        window.gtag('event', 'whatsapp_click', {
+          event_category: 'Engagement',
+          event_label: href
+        });
+      }
+    }
+
+    // Direct phone call tracking
+    if (href.startsWith('tel:')) {
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'conversion', {
+          send_to: 'AW-18435685520',
+          event_category: 'Contact',
+          event_label: 'Direct Phone Call',
+          value: 1.0,
+          currency: 'SAR'
+        });
+        window.gtag('event', 'phone_call_click', {
+          event_category: 'Engagement',
+          event_label: href
+        });
+      }
+    }
   });
 }
