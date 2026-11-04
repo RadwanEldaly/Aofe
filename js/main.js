@@ -629,6 +629,22 @@ function initGoogleAdsTracking() {
       }
     }
 
+    // Directions & Google Maps click tracking (الحصول على الاتجاهات - AW-18435685520/K_LQCPmN9LAdEJD56NZE)
+    if (
+      href.includes('maps.google') ||
+      href.includes('goo.gl/maps') ||
+      link.classList.contains('btn-directions') ||
+      link.dataset.conversion === 'directions'
+    ) {
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'conversion', {
+          send_to: 'AW-18435685520/K_LQCPmN9LAdEJD56NZE',
+          event_category: 'Navigation',
+          event_label: 'Get Directions (Google Maps)'
+        });
+      }
+    }
+
     // Direct phone call tracking
     if (href.startsWith('tel:')) {
       if (typeof window.gtag === 'function') {
